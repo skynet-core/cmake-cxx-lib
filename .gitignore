@@ -1,0 +1,11 @@
+build
+install
+out
+.vscode
+.idea
+packages
+.envrc
+.venv
+.cache
+.direnv
+result

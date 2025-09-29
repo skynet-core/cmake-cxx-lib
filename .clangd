@@ -1,0 +1,42 @@
+CompileFlags:
+  Add:
+    [
+      -xc++,
+      -std=c++23,
+      -Wall,
+      -Wextra,
+      -Werror,
+      -Wpedantic
+    ]
+  Compiler: clang++
+  BuiltinHeaders: QueryDriver
+  CompilationDatabase: ./
+  QueryDriver: clang++
+
+Index:
+  Background: Skip
+  StandardLibrary: true
+
+Diagnostics:
+  ClangTidy:
+    FastCheckFilter: Strict
+    UnusedIncludes: Strict
+    Add: []
+
+Completion:
+  AllScopes: Yes
+  ArgumentLists: FullPlaceholders
+  HeaderInsertion: IWYU
+  CodePatterns: All
+
+InlayHints:
+  BlockEnd: false
+  Designators: true
+  Enabled: true
+  ParameterNames: true
+  DeducedTypes: true
+  DefaultArguments: false
+  TypeNameLimit: 24
+
+Hover:
+  ShowAKA: true

@@ -1,0 +1,59 @@
+macro(add_exported_target EXPORTED_TARGET SUPPORTED_COMPONENTS)
+  include(GNUInstallDirs)
+  # we have to add it to exported interface ...
+  set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES VERSION ${PROJECT_VERSION}
+               SOVERSION ${PROJECT_VERSION}
+               INSTALL_RPATH "\$ORIGIN"
+               SKIP_BUILD_RPATH OFF
+               BUILD_WITH_INSTALL_RPATH
+               $<IF:$<BOOL:${STANDALONE_PACKAGE}>,OFF,ON>)
+
+  target_include_directories(
+    ${EXPORTED_TARGET}
+    PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+           "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${EXPORTED_TARGET}>")
+
+  get_target_property(target_type ${EXPORTED_TARGET} TYPE)
+  if(NOT target_type STREQUAL "EXECUTABLE")
+    add_library(${CMAKE_PROJECT_NAME}::${EXPORTED_TARGET} ALIAS
+                ${EXPORTED_TARGET})
+  endif()
+  if(NOT TARGET ${CMAKE_PROJECT_NAME})
+    add_custom_target(${CMAKE_PROJECT_NAME})
+  endif()
+
+  add_dependencies(${CMAKE_PROJECT_NAME} ${EXPORTED_TARGET})
+  if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    install(
+      DIRECTORY include/
+      COMPONENT ${EXPORTED_TARGET}
+      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${EXPORTED_TARGET})
+  endif()
+
+  install(
+    TARGETS ${EXPORTED_TARGET}
+    EXPORT ${EXPORTED_TARGET}Targets
+    FILE_SET CXX_MODULES
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/cxxmodules
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT ${EXPORTED_TARGET})
+
+  install(
+    EXPORT ${EXPORTED_TARGET}Targets
+    FILE ${CMAKE_PROJECT_NAME}${EXPORTED_TARGET}Targets.cmake
+    COMPONENT ${EXPORTED_TARGET}
+    NAMESPACE ${CMAKE_PROJECT_NAME}::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
+
+  export(
+    EXPORT ${EXPORTED_TARGET}Targets
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${CMAKE_PROJECT_NAME}${EXPORTED_TARGET}Targets.cmake"
+    NAMESPACE ${CMAKE_PROJECT_NAME}::)
+
+  set(${SUPPORTED_COMPONENTS}
+      "${EXPORTED_TARGET};${${SUPPORTED_COMPONENTS}}"
+      CACHE STRING "Global list of supported components" FORCE)
+endmacro()

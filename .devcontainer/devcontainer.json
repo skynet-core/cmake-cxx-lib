@@ -1,0 +1,148 @@
+{
+    "name": "DevSDK",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "USER_NAME": "vscode",
+            "NIXOS_VER": "25.05"
+        }
+    },
+    "containerUser": "vscode",
+    "remoteUser": "vscode",
+    "updateRemoteUserUID": false,
+    "containerEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}",
+        "WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
+        "XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}"
+    },
+    "mounts": [
+        "source=${localWorkspaceFolderBasename}_devcontainer_home,target=/home/vscode,type=volume",
+        "source=${localWorkspaceFolderBasename}_nix,target=/nix,type=volume"
+    ],
+    "runArgs": [
+        "--privileged",
+        "--userns=keep-id",
+        "--network=host",
+        "--device=/dev/dri:rw",
+        "--device=/dev/fuse:rw",
+        "--security-opt=label=disable",
+        "--security-opt=seccomp=unconfined",
+        "--volume=/sys/fs/cgroup:/sys/fs/cgroup:ro",
+        "--volume=${localEnv:HOME}:${localEnv:HOME}:rw",
+        "--volume=${localWorkspaceFolder}:${localWorkspaceFolder}:rw",
+        "--volume=${localEnv:XDG_RUNTIME_DIR}:${localEnv:XDG_RUNTIME_DIR}:rw",
+        "--name=${localWorkspaceFolderBasename}_devcontainer"
+    ],
+    "workspaceFolder": "${localWorkspaceFolder}",
+    "postCreateCommand": "${localWorkspaceFolder}/.devcontainer/setup.sh ${localWorkspaceFolder}",
+    "customizations": {
+        "jetbrains": {
+            "plugins": [],
+            "settings": {
+                "com.intellij:app:BuiltInServerOptions.builtInServerPort": 63970,
+                "com.intellij:app:HttpConfigurable.use_proxy_pac": true
+            }
+        },
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cmake-tools",
+                "cheshirekow.cmake-format",
+                "Rubymaniac.vscode-direnv",
+                "ms-python.python",
+                "eeyore.yapf",
+                "ms-azuretools.vscode-containers",
+                "mads-hartmann.bash-ide-vscode",
+                "matepek.vscode-catch2-test-adapter",
+                "cschlosser.doxdocgen",
+                "mkhl.shfmt",
+                "timonwong.shellcheck",
+                "mads-hartmann.bash-ide-vscode",
+                "llvm-vs-code-extensions.vscode-clangd",
+                "redhat.vscode-yaml",
+                "DavidAnson.vscode-markdownlint",
+                "yzhang.markdown-all-in-one",
+                "streetsidesoftware.code-spell-checker",
+                "llvm-vs-code-extensions.lldb-dap",
+                "rogalmic.bash-debug",
+                "mkhl.direnv",
+                "jnoortheen.nix-ide",
+                "arrterian.nix-env-selector"
+            ],
+            "settings": {
+                "cmake.useCMakePresets": "auto",
+                "cmake.options.statusBarVisibility": "icon",
+                "clangd.enable": true,
+                "clangd.restartAfterCrash": true,
+                "C_Cpp.intelliSenseEngine": "disabled",
+                "clangd.enableCodeCompletion": true,
+                "lldb-dap.executable-path": "/usr/lib/llvm-19/bin/lldb-dap",
+                "cmake.copyCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+                "cmake.cmakePath": "${workspaceFolder}/.venv/bin/cmake",
+                "cmakeFormat.exePath": "${workspaceFolder}/.venv/bin/cmake-format",
+                "cmake.cpackPath": "${workspaceFolder}/.venv/bin/cpack",
+                "cmake.generator": "Ninja",
+                "cmake.configureArgs": [],
+                "direnv.restart.automatic": true,
+                "direnv.watchForChanges": true,
+                "nixEnvSelector.useFlakes": true,
+                "nix.enableLanguageServer": true,
+                "nix.serverPath": "/home/vscode/.nix-profile/bin/nixd",
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "bash",
+                        "icon": "terminal-bash",
+                        "args": [
+                            "-i",
+                            "-l"
+                        ]
+                    },
+                    "zsh": {
+                        "path": "zsh",
+                        "args": [
+                            "-i",
+                            "-l"
+                        ]
+                    },
+                    "fish": {
+                        "path": "fish",
+                        "args": [
+                            "-i",
+                            "-l"
+                        ]
+                    }
+                },
+                "terminal.integrated.defaultProfile.linux": "fish",
+                "nix.serverSettings": {
+                    "nil": {
+                        "formatting": {
+                            "command": [
+                                "nixfmt"
+                            ]
+                        }
+                    },
+                    "nixd": {
+                        "formatting": {
+                            "command": [
+                                "nixfmt"
+                            ]
+                        }
+                    }
+                },
+                "launch": {
+                    "version": "0.2.0",
+                    "configurations": [
+                        {
+                            "type": "lldb-dap",
+                            "request": "launch",
+                            "name": "Debug",
+                            "program": "${command:cmake.launchTargetPath}",
+                            "args": [],
+                            "env": {},
+                            "cwd": "${workspaceRoot}"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,10 @@
+Checks: "*,-abseil*,-altera-*,-android-*,-boost-*,-darwin-*,-fuchsia-*,-hicpp-*,-llvm-*,-llvmlibc-*,-linuxkernel-*,-mpi-*,-objc-*,-openmp-*,-zircon-*,-bugprone-easily-swappable-parameters ,-bugprone-suspicious-include ,-bugprone-integer-division,-bugprone-suspicious-enum-usage ,-clang-analyzer-alpha*,-clang-analyzer-osx.*,-clang-analyzer-webkit.*,-modernize-use-trailing-return-type,-readability-implicit-bool-conversion,-misc-non-private-member-variables-in-classes,-performance-enum-size,-llvm-header-guard,-cppcoreguidelines-special-member-functions,-misc-include-cleaner"
+WarningsAsErrors: true
+HeaderFilterRegex: ""
+FormatStyle: file
+CheckOptions:
+  readability-identifier-length.IgnoredVariableNames: "^(OK|x|y|z|i)$"
+  cppcoreguidelines-avoid-non-const-global-variables.AllowInternalLinkage: 'true'
+  llvm-namespace-comment.AllowOmittingNamespaceComments: 'true'
+  misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic: 'true'
+  misc-non-private-member-variables-in-classes.IgnorePublicMemberVariables: 'true'

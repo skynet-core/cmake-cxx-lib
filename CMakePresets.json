@@ -1,0 +1,83 @@
+{
+    "version": 5,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 31,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "common",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
+                "CMAKE_CXX_STANDARD": "23",
+                "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+                "CMAKE_CXX_EXTENSIONS": "OFF",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "cuphttp_BUILD_TESTING": "ON"
+            },
+            "vendor": {
+                "qt.io/QtCreator/1.0": {
+                    "AskBeforePresetsReload": true,
+                    "AskReConfigureInitialParams": false,
+                    "AutorunCMake": false,
+                    "PackageManagerAutoSetup": false,
+                    "ShowAdvancedOptionsByDefault": true,
+                    "ShowSourceSubFolders": false,
+                    "UseJunctionsForSourceAndBuildDirectories": true
+                }
+            }
+        },
+        {
+            "name": "debug-darwin",
+            "inherits": [
+                "common"
+            ],
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm/bin/clang",
+                "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++",
+                "CMAKE_LINKER_TYPE": "LLD",
+                "CMAKE_PREFIX_PATH": "/opt/homebrew/lib/cmake",
+                "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "environment": {
+                "SDKROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+                "LD_LIBRARY_PATH": "/opt/homebrew/opt/llvm/lib:/opt/homebrew/opt/boost/lib:/opt/homebrew/openssl@3/lib"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        },
+        {
+            "name": "debug-linux",
+            "inherits": [
+                "common"
+            ],
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug-darwin",
+            "configurePreset": "debug-darwin"
+        },
+        {
+            "name": "debug-linux",
+            "configurePreset": "debug-linux"
+        }
+    ]
+}
