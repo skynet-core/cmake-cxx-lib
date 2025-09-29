@@ -47,3 +47,8 @@ else
 	# shellcheck disable=SC2016
 	echo 'direnv hook fish | source' >"$HOME/.config/fish/config.fish"
 fi
+
+if [ -f .envrc ]; then
+	direnv allow
+	direnv reload
+fi

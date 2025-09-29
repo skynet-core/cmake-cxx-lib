@@ -85,8 +85,6 @@
                 "direnv.restart.automatic": true,
                 "direnv.watchForChanges": true,
                 "nixEnvSelector.useFlakes": true,
-                "nix.enableLanguageServer": true,
-                "nix.serverPath": "/home/vscode/.nix-profile/bin/nixd",
                 "terminal.integrated.profiles.linux": {
                     "bash": {
                         "path": "bash",
@@ -112,18 +110,20 @@
                     }
                 },
                 "terminal.integrated.defaultProfile.linux": "fish",
+                "nix.enableLanguageServer": true,
+                "nix.serverPath": "/home/vscode/.nix-profile/bin/nixd",
                 "nix.serverSettings": {
                     "nil": {
                         "formatting": {
                             "command": [
-                                "nixfmt"
+                                "/home/vscode/.nix-profile/bin/nixfmt"
                             ]
                         }
                     },
                     "nixd": {
                         "formatting": {
                             "command": [
-                                "nixfmt"
+                                "/home/vscode/.nix-profile/bin/nixfmt"
                             ]
                         }
                     }

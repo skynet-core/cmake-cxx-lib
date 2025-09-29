@@ -32,46 +32,56 @@
           ];
         };
         commonNativePackages = with pkgs; [
-            fish
-            cmake
-            ninja
-            llvm.clang-tools
-            patchelf
-            dpkg
-            rpm
-            llvm.lld
+          fish
+          cmake
+          ninja
+          llvm.clang-tools
+          patchelf
+          dpkg
+          rpm
+          llvm.lld
+          nixd
+          nixfmt-rfc-style
         ];
         buildInputs = with pkgs; [
-            cli11
-            boost188
-            openssl
-            catch2_3
+          cli11
+          boost
+          openssl
+          catch2_3
         ];
         shellHook = ''
-                cat << EOF | cc -x c++ -
-                #include <iostream>
-                #include <filesystem>
-                int main() {
-                    std::cout << std::filesystem::path{"/"} << " Hello, World"<< std::endl;
-                    return 0;
-                }
-                EOF
-                rm a.out
-              '';
-        gccShell = pkgs.mkShell.override {
-          stdenv = gccStdenv;
-        }{
-          packages = commonNativePackages;
-          inherit buildInputs;
-          inherit shellHook;
-        };
-        llvmShell = pkgs.mkShell.override {
-          stdenv = llvmStdenv;
-        }{
-          packages = commonNativePackages;
-          inherit buildInputs;
-          inherit shellHook;
-        };
+          echo "Checking compiler ..."
+          cat <<EOF | c++ -x c++ -
+            #include <iostream>
+            #include <filesystem>
+            int main() {
+              std::cout << std::filesystem::current_path() << "\n" << "Compiler works!"<< std::endl;
+              return 0;
+            }
+          EOF
+          ./a.out 1>/dev/null 2>&1
+          rm ./a.out || true
+        '';
+        gccShell =
+          pkgs.mkShell.override
+            {
+              stdenv = gccStdenv;
+            }
+            {
+              packages = commonNativePackages;
+              buildInputs = buildInputs ++ [ gccStdenv ];
+              inherit shellHook;
+            };
+        llvmShell =
+          pkgs.mkShell.override
+            {
+              stdenv = llvmStdenv;
+            }
+            {
+              packages = commonNativePackages;
+              buildInputs = buildInputs ++ [ llvmStdenv ];
+              inherit shellHook;
+            };
       in
       {
         packages.default = gccStdenv.mkDerivation {
@@ -79,7 +89,7 @@
           version = "0.1.0";
           inherit src;
           inherit buildInputs;
-          nativeBuildInputs = commonNativePackages ++ [];
+          nativeBuildInputs = commonNativePackages ++ [ ];
           cmakeFlags = [
             "-DCMAKE_CXX_STANDARD=23"
             "-DCMAKE_CXX_EXTENSIONS=OFF"
@@ -88,7 +98,7 @@
           ];
           __structuredAttrs = true;
         };
-        devShells =  {
+        devShells = {
           default = llvmShell;
           gcc = gccShell;
           llvm = llvmShell;
