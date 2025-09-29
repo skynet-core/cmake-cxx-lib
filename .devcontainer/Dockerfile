@@ -84,6 +84,6 @@ RUN curl -L "https://nixos.org/nix/install" | sh -s -- --no-daemon --no-channel-
     nixpkgs#nix-direnv \
     nixpkgs#nixfmt-rfc-style
     
-RUN echo 'eval $(direnv hook zsh)' >> "$HOME/.zshrc"
-RUN echo 'eval $(direnv hook bash)' >> "$HOME/.bashrc"
+RUN echo 'eval "$(direnv hook zsh)"' >> "$HOME/.zshrc"
+RUN echo 'eval "$(direnv hook bash)"' >> "$HOME/.bashrc"
 RUN mkdir -p "$HOME/.config/fish" || true && echo 'direnv hook fish | source' >> "$HOME/.config/fish/config.fish"
